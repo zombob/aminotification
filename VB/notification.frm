@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "mswinsck.ocx"
 Begin VB.Form notification 
    Appearance      =   0  'Flat
-   BackColor       =   &H80000005&
+   BackColor       =   &H80000004&
    Caption         =   "AMI通知"
    ClientHeight    =   4980
    ClientLeft      =   8100
@@ -23,22 +23,22 @@ Begin VB.Form notification
       Width           =   3375
       Begin VB.CheckBox BalloonCheck 
          Appearance      =   0  'Flat
-         BackColor       =   &H80000005&
+         BackColor       =   &H80000004&
          Caption         =   "气泡提示"
          ForeColor       =   &H80000008&
          Height          =   185
-         Left            =   1800
+         Left            =   240
          TabIndex        =   7
          Top             =   240
          Width           =   1335
       End
       Begin VB.CheckBox TrackCheck 
          Appearance      =   0  'Flat
-         BackColor       =   &H80000005&
+         BackColor       =   &H80000004&
          Caption         =   "打开监控框"
          ForeColor       =   &H80000008&
          Height          =   180
-         Left            =   240
+         Left            =   1800
          TabIndex        =   6
          Top             =   240
          Width           =   1335
@@ -253,8 +253,8 @@ Private Sub Form_Load()
     PortTXT.Text = ReadReg(PortTXT)
     NameTXT.Text = ReadReg(NameTXT)
     PswTXT.Text = ReadReg(PswTXT)
-    TrackCheck.Value = ReadReg(TrackCheck)
-    BalloonCheck.Value = ReadReg(BalloonCheck)
+    TrackCheck.Value = Val(ReadReg(TrackCheck))
+    BalloonCheck.Value = Val(ReadReg(BalloonCheck))
     
     If ReadReg(PopAddrTXT) <> "" Then
         PopAddrTXT.Text = ReadReg(PopAddrTXT)
@@ -341,11 +341,11 @@ If ReadReg(PortTXT) <> PortTXT.Text Then
     If WinsockClient.State = sckClosed Then
         Me.Caption = "AMI通知"
     End If
-    If PortTXT.Text > 65535 Then
-        PortTXT.Text = 65534
+    If Val(PortTXT.Text) > 65535 Then
+        PortTXT.Text = "65535"
     End If
     If PortTXT.Text <> "" Then
-        WinsockClient.RemotePort = PortTXT.Text
+        WinsockClient.RemotePort = Val(PortTXT.Text)
     End If
 End If
 End Sub
@@ -371,14 +371,15 @@ Private Sub loginCommand_Click()
         Logined = False
         WinsockClient_Closed
         Me.Caption = "AMI通知-已断开"
-        loginCommand.Caption = "重新连接"
+        loginCommand.Caption = "登录"
     Else
         LoginTXT = "Action: login" & vbCrLf & "Username: " & NameTXT.Text & vbCrLf & "Secret: " & PswTXT.Text
         If HostTXT.Text <> "" And PortTXT.Text <> "" Then
             WinsockClient.Close
             WinsockClient.RemoteHost = HostTXT.Text
-            WinsockClient.RemotePort = PortTXT.Text
+            WinsockClient.RemotePort = Val(PortTXT.Text)
             WinsockClient.Connect
+            Me.Caption = "AMI通知-连接中..."
         End If
     End If
 End Sub
@@ -492,7 +493,7 @@ Private Function Popup(Str As String)   '实施弹屏
     If Trim(ExtenTXT.Text) = "" Or InStr(ExtenTXT.Text, DestPhone) Then '当分机文本框为空时,弹出所有
         '气泡显示
         If BalloonCheck.Value = 1 Then
-            TrayBalloon notification, "是" & vbCrLf & CallerID & "打给" & DestPhone & "的", "来电话啦", NIIF_INFO
+            TrayBalloon notification, "是" & CallerID & "打给" & DestPhone & "的", "来电话啦", NIIF_INFO
         End If
         Shell "cmd /c start " & PopAddrStr '''''使用默认浏览器弹屏
         Debug.Print "到达" & DestPhone
@@ -516,7 +517,7 @@ End Sub
 
 Private Function doLoginedSuccess()
     Logined = True
-    loginCommand.Caption = "成功登录"
+    loginCommand.Caption = "断开"
     notification.Caption = "AMI通知-已登录"
     
     'WriteReg HostTXT '登录成功时把服务器数据写入注册表
