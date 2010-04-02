@@ -1,8 +1,7 @@
 VERSION 5.00
-Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "mswinsck.ocx"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form notification 
    Appearance      =   0  'Flat
-   BackColor       =   &H80000004&
    Caption         =   "AMI通知"
    ClientHeight    =   4980
    ClientLeft      =   8100
@@ -14,7 +13,6 @@ Begin VB.Form notification
    ScaleHeight     =   4980
    ScaleWidth      =   3585
    Begin VB.Frame otherSetFrame 
-      BackColor       =   &H80000004&
       Caption         =   "其他设置"
       Height          =   615
       Left            =   120
@@ -23,7 +21,6 @@ Begin VB.Form notification
       Width           =   3375
       Begin VB.CheckBox BalloonCheck 
          Appearance      =   0  'Flat
-         BackColor       =   &H80000004&
          Caption         =   "气泡提示"
          ForeColor       =   &H80000008&
          Height          =   185
@@ -34,7 +31,6 @@ Begin VB.Form notification
       End
       Begin VB.CheckBox TrackCheck 
          Appearance      =   0  'Flat
-         BackColor       =   &H80000004&
          Caption         =   "打开监控框"
          ForeColor       =   &H80000008&
          Height          =   180
@@ -45,7 +41,6 @@ Begin VB.Form notification
       End
    End
    Begin VB.Frame PopSetFrame 
-      BackColor       =   &H80000004&
       Caption         =   "弹屏设置"
       Height          =   1455
       Left            =   120
@@ -73,7 +68,6 @@ Begin VB.Form notification
       End
       Begin VB.Label Label5 
          AutoSize        =   -1  'True
-         BackColor       =   &H80000004&
          Caption         =   "分机,多个分机用逗号隔开"
          Height          =   180
          Left            =   120
@@ -83,7 +77,6 @@ Begin VB.Form notification
       End
    End
    Begin VB.Frame HostSetFrame 
-      BackColor       =   &H80000004&
       Height          =   1815
       Left            =   120
       TabIndex        =   10
@@ -125,7 +118,6 @@ Begin VB.Form notification
       End
       Begin VB.Label Label4 
          AutoSize        =   -1  'True
-         BackColor       =   &H80000004&
          Caption         =   "登录名"
          Height          =   180
          Left            =   2400
@@ -135,7 +127,6 @@ Begin VB.Form notification
       End
       Begin VB.Label Label3 
          AutoSize        =   -1  'True
-         BackColor       =   &H80000004&
          Caption         =   "密码"
          Height          =   180
          Left            =   2400
@@ -145,7 +136,6 @@ Begin VB.Form notification
       End
       Begin VB.Label Label2 
          AutoSize        =   -1  'True
-         BackColor       =   &H80000004&
          Caption         =   "端口"
          Height          =   180
          Left            =   2400
@@ -155,7 +145,6 @@ Begin VB.Form notification
       End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True
-         BackColor       =   &H80000004&
          Caption         =   "服务器地址"
          Height          =   180
          Left            =   240
@@ -207,6 +196,56 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'* Copyright (c) 2010 著作权由张鑫所有。著作权人保留一切权利。
+'*
+'* 这份授权条款，在使用者符合以下三条件的情形下，授予使用者使用及再散播本
+'* 软件包装原始码及二进位可执行形式的权利，无论此包装是否经改作皆然：
+'*
+'* * 对于本软件源代码的再散播，必须保留上述的版权宣告、此三条件表列，以
+'*   及下述的免责声明。
+'* * 对于本套件二进位可执行形式的再散播，必须连带以文件以及／或者其他附
+'*   于散播包装中的媒介方式，重制上述之版权宣告、此三条件表列，以及下述
+'*   的免责声明。
+'* * 未获事前取得书面许可，不得使用张鑫或本软件贡献者之名称，
+'*   来为本软件之衍生物做任何表示支持、认可或推广、促销之行为。
+'*
+'* 免责声明：本软件是由张鑫及本软件之贡献者以现状（"as is"）提供，本软件
+'* 包装不负任何明示或默示之担保责任，包括但不限于就适售性以及特定目的的
+'* 适用性为默示性担保。张鑫及本软件之贡献者，无论任何条件、无论成因或任
+'* 何责任主义、无论此责任为因合约关系、无过失责任主义或因非违约之侵权
+'* （包括过失或其他原因等）而起，对于任何因使用本软件包装所产生的任何直
+'* 接性、间接性、偶发性、特殊性、惩罚性或任何结果的损害（包括但不限于替
+'* 代商品或劳务之购用、使用损失、资料损失、利益损失、业务中断等等），不
+'* 负任何责任，即在该种使用已获事前告知可能会造成此类损害的情形下亦然。
+
+'* Copyright (c) 2010, ZhangXin. All rights reserved.
+'*
+'* Redistribution and use in source and binary forms, with or without
+'* modification, are permitted provided that the following conditions are met:
+'*
+'*     * Redistributions of source code must retain the above copyright
+'*       notice, this list of conditions and the following disclaimer.
+'*     * Redistributions in binary form must reproduce the above copyright
+'*       notice, this list of conditions and the following disclaimer in the
+'*       documentation and/or other materials provided with the distribution.
+'*     * Neither the name of the ZhangXin nor the names of its contributors
+'*       may be used to endorse or promote products derived from this software
+'*       without specific prior written permission.
+'*
+'* THIS SOFTWARE IS PROVIDED BY ZHANGXIN AND CONTRIBUTORS "AS IS" AND ANY
+'* EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+'* WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+'* DISCLAIMED. IN NO EVENT SHALL ZHANGXIN AND CONTRIBUTORS BE LIABLE FOR ANY
+'* DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+'* (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+'* LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+'* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+'* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+'* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
 '''''''''''''''尚未完成的部分:
 '''''''''''''''1.一个心跳程序，检测与服务器连接的状态
 '''''''''''''''2.改进登录方式（使用加密密码登录方式）
@@ -243,7 +282,7 @@ End Sub
 
 Private Sub Form_Load()
     '载入系统托盘
-    TrayAddIcon notification, App.Path & "\ico.ico", "来电话时,我会喊哦!"
+    'TrayAddIcon notification, App.Path & "\ico.ico", "来电话时,我会喊哦!"
     
     ''添加一个WScript.Shell
     Set WSHShell = CreateObject("WScript.Shell")
@@ -282,8 +321,8 @@ Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y A
         Debug.Print "左键放开"
     Case LeftDown
         Debug.Print "左键按下"
-        notification.WindowState = 0
-        notification.Show
+        Me.WindowState = 0
+        Me.Show
     Case LeftDbClick
         Debug.Print "左键双击"
     Case MiddleUp
@@ -311,7 +350,13 @@ End Sub
 
 
 Private Sub Form_Resize()
-If Me.WindowState = vbMinimized Then Me.Hide
+If Me.WindowState = vbMinimized Then
+    Me.Hide
+    '载入系统托盘
+    TrayAddIcon notification, App.Path & "\ico.ico", "来电话时,我会喊哦!"
+Else
+    TrayRemoveIcon
+End If
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -421,7 +466,7 @@ WinsockClient_Closed
 End Sub
 
 Private Sub WinsockClient_Connect()
-notification.Caption = "已发现服务器"
+Me.Caption = "已发现服务器"
 WinsockClient.SendData (LoginTXT & vbCrLf & vbCrLf)
 End Sub
 
@@ -518,7 +563,7 @@ End Sub
 Private Function doLoginedSuccess()
     Logined = True
     loginCommand.Caption = "断开"
-    notification.Caption = "AMI通知-已登录"
+    Me.Caption = "AMI通知-已登录"
     
     'WriteReg HostTXT '登录成功时把服务器数据写入注册表
     'WriteReg PortTXT
@@ -556,7 +601,7 @@ End Function
 
 Private Function WinsockClient_Closed()
     Logined = False
-    notification.Caption = "已断开服务器"
+    Me.Caption = "已断开服务器"
     loginCommand.Caption = "登录"
 
     HostTXT.Enabled = True
@@ -567,9 +612,9 @@ End Function
 
 Private Sub mShow_Click()
     
-    notification.WindowState = 0
-    notification.Show
-
+    Me.WindowState = 0
+    Me.Show
+    'TrayRemoveIcon
 End Sub
 
 Private Sub mExit_Click()
