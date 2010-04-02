@@ -23,7 +23,7 @@ Begin VB.Form notification
          Appearance      =   0  'Flat
          Caption         =   "气泡提示"
          ForeColor       =   &H80000008&
-         Height          =   185
+         Height          =   300
          Left            =   240
          TabIndex        =   7
          Top             =   240
@@ -33,7 +33,7 @@ Begin VB.Form notification
          Appearance      =   0  'Flat
          Caption         =   "打开监控框"
          ForeColor       =   &H80000008&
-         Height          =   180
+         Height          =   300
          Left            =   1800
          TabIndex        =   6
          Top             =   240
@@ -165,6 +165,7 @@ Begin VB.Form notification
       Height          =   4695
       Left            =   3720
       MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
       TabIndex        =   9
       Top             =   120
       Visible         =   0   'False
@@ -251,6 +252,7 @@ Attribute VB_Exposed = False
 '''''''''''''''2.改进登录方式（使用加密密码登录方式）
 '''''''''''''''3.把密码加密存贮至注册表
 '''''''''''''''4.托盘图标的真彩色
+'''''''''''''''5.destphone的数据有时候显示是一个数字.
 
 Private Declare Function SetForegroundWindow Lib "user32" (ByVal hwnd As Long) As Long
 
@@ -377,6 +379,7 @@ If ReadReg(HostTXT) <> HostTXT.Text Then
 End If
 End Sub
 
+
 Private Sub PortTXT_Change()
 PortTXT.Text = Trim(PortTXT.Text)
 If ReadReg(PortTXT) <> PortTXT.Text Then
@@ -461,6 +464,10 @@ Private Sub TrackCheck_Click()
 End Sub
 
 
+Private Sub TrackTXT_Change()
+TrackTXT.SelStart = Len(TrackTXT.Text)
+End Sub
+
 Private Sub WinsockClient_Close()
 WinsockClient_Closed
 End Sub
@@ -490,7 +497,7 @@ Private Sub winsockclient_DataArrival(ByVal bytesTotal As Long)
     End If
         
     ''''''''限定trackTXT的文本大小
-    If Len(TrackTXT.Text) > 300 Then
+    If Len(TrackTXT.Text) > 10000 Then
         TrackTXT.Text = ""
     End If
     TrackTXT.Text = TrackTXT.Text & arrivalStr
@@ -535,13 +542,19 @@ Private Function Popup(Str As String)   '实施弹屏
         PopAddrStr = PopAddrTXT.Text & CallerID
     End If
     
-    If Trim(ExtenTXT.Text) = "" Or InStr(ExtenTXT.Text, DestPhone) Then '当分机文本框为空时,弹出所有
-        '气泡显示
-        If BalloonCheck.Value = 1 Then
-            TrayBalloon notification, "是" & CallerID & "打给" & DestPhone & "的", "来电话啦", NIIF_INFO
+    If Len(DestPhone) > 2 Then '''''有时候destphone是一个数字,稍后再查找原因
+        If Trim(ExtenTXT.Text) = "" Or InStr(ExtenTXT.Text, DestPhone) Then '当分机文本框为空时,弹出所有
+    
+            '气泡显示
+            If BalloonCheck.Value = 1 Then
+                TrayBalloon notification, "是" & CallerID & "打给" & DestPhone & "的", "来电话啦", NIIF_INFO
+            End If
+            Shell "cmd /c start " & PopAddrStr '''''使用默认浏览器弹屏
+            Debug.Print "到达" & DestPhone
         End If
-        Shell "cmd /c start " & PopAddrStr '''''使用默认浏览器弹屏
-        Debug.Print "到达" & DestPhone
+    Else
+        Debug.Print Str
+        Debug.Print "此处的"
     End If
 End Function
 
@@ -565,10 +578,6 @@ Private Function doLoginedSuccess()
     loginCommand.Caption = "断开"
     Me.Caption = "AMI通知-已登录"
     
-    'WriteReg HostTXT '登录成功时把服务器数据写入注册表
-    'WriteReg PortTXT
-    'WriteReg NameTXT
-    'WriteReg PswTXT
     
     HostTXT.Enabled = False
     PortTXT.Enabled = False
@@ -594,9 +603,6 @@ End Function
 Private Function ReadReg(Ob As Object) As String
     On Error Resume Next
     ReadReg = WSHShell.RegRead(regPath & Ob.Name)
-    'If txt <> "" Then
-    '    TB.Text = txt
-    'End If
 End Function
 
 Private Function WinsockClient_Closed()
