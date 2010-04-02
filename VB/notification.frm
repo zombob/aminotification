@@ -510,7 +510,7 @@ End Function
 
 Private Function FoundPopEvent(Str As String) As Boolean '使用条件过滤Event,根据具体需求更改###################################################
     'If InStr(str, "Event: Dial") And InStr(str, "Source: DAHDI") And InStr(str, "Destination: SIP") Then
-    If Mid(Str, 1, 11) = "Event: Dial" And InStr(Str, "Source: ") And InStr(Str, "Destination: SIP") Then
+    If Mid(Str, 1, 11) = "Event: Dial" And InStr(Str, "Source: ") And InStr(Str, "Destination: ") Then
         FoundPopEvent = True
     Else
         FoundPopEvent = False
