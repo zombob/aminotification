@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "mswinsck.ocx"
 Begin VB.Form notification 
    Appearance      =   0  'Flat
    Caption         =   "AMI通知"
@@ -252,7 +252,7 @@ Attribute VB_Exposed = False
 '''''''''''''''2.改进登录方式（使用加密密码登录方式）
 '''''''''''''''3.把密码加密存贮至注册表
 '''''''''''''''4.托盘图标的真彩色
-'''''''''''''''5.destphone的数据有时候显示是一个数字.
+'''''''''''''''5.改进弹屏过滤条件,目前过滤条件只适合sip分机
 
 Private Declare Function SetForegroundWindow Lib "user32" (ByVal hwnd As Long) As Long
 
@@ -508,20 +508,28 @@ Private Function PopDialEvent(Str As String) '把收到的string，按照两个换行符分段
     Events = Split(Str, vbCrLf & vbCrLf)
     
     For i = 0 To UBound(Events)
-        
-        If FoundPopEvent(Events(i)) Then
-            Popup (Events(i))
+        fe = FoundEvent(Events(i))
+        If fe = "dial" Then
+            PrePopup (Events(i))
+        ElseIf fe = "newcallerid" Then
+            '''''''''''''''''''''''''do someting'''''''''''''''''''''''
         End If
     Next
 End Function
 
-Private Function FoundPopEvent(Str As String) As Boolean '使用条件过滤Event,根据具体需求更改###################################################
+Private Function FoundEvent(Str As String) As String
+
+    '使用条件过滤Event,根据具体需求更改###################################################
     'If InStr(str, "Event: Dial") And InStr(str, "Source: DAHDI") And InStr(str, "Destination: SIP") Then
-    If Mid(Str, 1, 11) = "Event: Dial" And InStr(Str, "Source: ") And InStr(Str, "Destination: ") Then
-        FoundPopEvent = True
-    Else
-        FoundPopEvent = False
+    If Mid(Str, 1, 11) = "Event: Dial" Then
+        FoundEvent = "dial"
+    ElseIf Mid(Str, 1, 18) = "Event: Newcallerid" Then
+        FoundEvent = "newcallerid"
     End If
+End Function
+
+Private Function PrePopup(Str As String) ''''''准备弹出,在等待newcallerid中的信息.
+
 End Function
 
 Private Function Popup(Str As String)   '实施弹屏
