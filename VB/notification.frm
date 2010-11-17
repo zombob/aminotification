@@ -1,23 +1,23 @@
 VERSION 5.00
-Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "mswinsck.ocx"
+Object = "{248DD890-BB45-11CF-9ABC-0080C7E7B78D}#1.0#0"; "MSWINSCK.OCX"
 Begin VB.Form notification 
    Appearance      =   0  'Flat
    Caption         =   "AMI通知"
-   ClientHeight    =   4980
+   ClientHeight    =   5775
    ClientLeft      =   8100
    ClientTop       =   4185
    ClientWidth     =   3585
    Icon            =   "notification.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
-   ScaleHeight     =   4980
+   ScaleHeight     =   5775
    ScaleWidth      =   3585
    Begin VB.Frame otherSetFrame 
       Caption         =   "其他设置"
       Height          =   615
       Left            =   120
       TabIndex        =   17
-      Top             =   3600
+      Top             =   4560
       Width           =   3375
       Begin VB.CheckBox BalloonCheck 
          Appearance      =   0  'Flat
@@ -42,11 +42,21 @@ Begin VB.Form notification
    End
    Begin VB.Frame PopSetFrame 
       Caption         =   "弹屏设置"
-      Height          =   1455
+      Height          =   2415
       Left            =   120
       TabIndex        =   15
       Top             =   2040
       Width           =   3375
+      Begin VB.TextBox ExcludedNumTXT 
+         Appearance      =   0  'Flat
+         Height          =   495
+         Left            =   120
+         MultiLine       =   -1  'True
+         ScrollBars      =   2  'Vertical
+         TabIndex        =   18
+         Top             =   1680
+         Width           =   3135
+      End
       Begin VB.TextBox ExtenTXT 
          Appearance      =   0  'Flat
          Height          =   270
@@ -66,14 +76,23 @@ Begin VB.Form notification
          Top             =   240
          Width           =   3135
       End
+      Begin VB.Label Label6 
+         AutoSize        =   -1  'True
+         Caption         =   "哪些来电号码不用弹屏,用逗号隔开"
+         Height          =   180
+         Left            =   120
+         TabIndex        =   19
+         Top             =   1440
+         Width           =   2790
+      End
       Begin VB.Label Label5 
          AutoSize        =   -1  'True
-         Caption         =   "分机,多个分机用逗号隔开"
+         Caption         =   "要监视的分机,多个分机用逗号隔开"
          Height          =   180
          Left            =   120
          TabIndex        =   16
          Top             =   720
-         Width           =   2070
+         Width           =   2790
       End
    End
    Begin VB.Frame HostSetFrame 
@@ -158,7 +177,7 @@ Begin VB.Form notification
       Height          =   375
       Left            =   1200
       TabIndex        =   8
-      Top             =   4440
+      Top             =   5280
       Width           =   975
    End
    Begin VB.TextBox TrackTXT 
@@ -252,7 +271,7 @@ Attribute VB_Exposed = False
 '''''''''''''''2.改进登录方式（使用加密密码登录方式）
 '''''''''''''''3.把密码加密存贮至注册表
 '''''''''''''''4.托盘图标的真彩色
-'''''''''''''''5.改进弹屏过滤条件,目前过滤条件只适合sip分机
+'''''''''''''''5.destphone的数据有时候显示是一个数字.
 
 Private Declare Function SetForegroundWindow Lib "user32" (ByVal hwnd As Long) As Long
 
@@ -276,6 +295,12 @@ Private Sub BalloonCheck_Click()
 WriteReg BalloonCheck
 End Sub
 
+Private Sub ExcludedNumTXT_Change()
+If ReadReg(ExcludedNumTXT) <> ExcludedNumTXT.Text Then
+    WriteReg ExcludedNumTXT
+End If
+End Sub
+
 Private Sub ExtenTXT_Change()
 ExtenTXT.Text = Trim(ExtenTXT.Text)
 WriteReg ExtenTXT
@@ -294,6 +319,7 @@ Private Sub Form_Load()
     PortTXT.Text = ReadReg(PortTXT)
     NameTXT.Text = ReadReg(NameTXT)
     PswTXT.Text = ReadReg(PswTXT)
+    ExcludedNumTXT.Text = ReadReg(ExcludedNumTXT)
     TrackCheck.Value = Val(ReadReg(TrackCheck))
     BalloonCheck.Value = Val(ReadReg(BalloonCheck))
     
@@ -380,6 +406,8 @@ End If
 End Sub
 
 
+
+
 Private Sub PortTXT_Change()
 PortTXT.Text = Trim(PortTXT.Text)
 If ReadReg(PortTXT) <> PortTXT.Text Then
@@ -452,6 +480,7 @@ Private Sub PswTXT_Change()
 WriteReg PswTXT
 End Sub
 
+
 Private Sub TrackCheck_Click()
     If TrackCheck.Value = 1 Then
         TrackTXT.Visible = True
@@ -508,28 +537,20 @@ Private Function PopDialEvent(Str As String) '把收到的string，按照两个换行符分段
     Events = Split(Str, vbCrLf & vbCrLf)
     
     For i = 0 To UBound(Events)
-        fe = FoundEvent(Events(i))
-        If fe = "dial" Then
-            PrePopup (Events(i))
-        ElseIf fe = "newcallerid" Then
-            '''''''''''''''''''''''''do someting'''''''''''''''''''''''
+        
+        If FoundPopEvent(Events(i)) Then
+            Popup (Events(i))
         End If
     Next
 End Function
 
-Private Function FoundEvent(Str As String) As String
-
-    '使用条件过滤Event,根据具体需求更改###################################################
+Private Function FoundPopEvent(Str As String) As Boolean '使用条件过滤Event,根据具体需求更改###################################################
     'If InStr(str, "Event: Dial") And InStr(str, "Source: DAHDI") And InStr(str, "Destination: SIP") Then
-    If Mid(Str, 1, 11) = "Event: Dial" Then
-        FoundEvent = "dial"
-    ElseIf Mid(Str, 1, 18) = "Event: Newcallerid" Then
-        FoundEvent = "newcallerid"
+    If Mid(Str, 1, 11) = "Event: Dial" And InStr(Str, "Source: ") And InStr(Str, "Destination: ") Then
+        FoundPopEvent = True
+    Else
+        FoundPopEvent = False
     End If
-End Function
-
-Private Function PrePopup(Str As String) ''''''准备弹出,在等待newcallerid中的信息.
-
 End Function
 
 Private Function Popup(Str As String)   '实施弹屏
@@ -557,7 +578,9 @@ Private Function Popup(Str As String)   '实施弹屏
             If BalloonCheck.Value = 1 Then
                 TrayBalloon notification, "是" & CallerID & "打给" & DestPhone & "的", "来电话啦", NIIF_INFO
             End If
-            Shell "cmd /c start " & PopAddrStr '''''使用默认浏览器弹屏
+            If InStr(ExcludedNumTXT.Text, CallerID) = 0 Then '被排除的分机不弹出
+                Shell "cmd /c start " & PopAddrStr '''''使用默认浏览器弹屏
+            End If
             Debug.Print "到达" & DestPhone
         End If
     Else
